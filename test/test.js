@@ -41,7 +41,7 @@ function init() {
 
     // b_calc = $('#calc');
     // b_calc.click(function (polygon) { return function ()
-    function recalc (polygon) {
+    function recalc (polygon) { return function () {
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
 
