@@ -34,14 +34,21 @@ function init() {
     // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
         var route = e.get('target').getRoute();
-        route.Editor.events.add ('routeupdate', recalc(polygon));
-        recalc (polygon);
+        console.log (route);
+
+        alert ('Route length - ' + route.getLength());
+        // notice me, senpai
+        route.Editor.events.add ('routeupdate', recalc(polygon, route));
+        // plsss
+        recalc (polygon, route);
+        // plsssss
+        alert("Watashi o mushi shinaide kudasaaai (>_<)");
     });
 
 
     // b_calc = $('#calc');
     // b_calc.click(function (polygon) { return function ()
-    function recalc (polygon) { return function () {
+    function recalc (polygon, cur_route) { return function () {
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
 
@@ -87,7 +94,7 @@ function init() {
                 }}(firstPath));
             });
         }
-    }}(polygon.geometry));
+    }}(polygon.geometry);
 }
 /*
 var jsonstr = "{\
