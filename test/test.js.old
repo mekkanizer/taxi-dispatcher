@@ -34,23 +34,17 @@ function init() {
     // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
         var route = e.get('target').getRoute();
-        console.log (route);
-
         alert ('Route length - ' + route.getLength());
         // notice me, senpai
-
-        routeEditor.events.add ('update', recalc (polygon, route));
-        // plsss
+        route.Editor.events.add('routeupdate', function () { recalc(polygon, route) });
         recalc (polygon, route);
-        // plsssss
-
+        alert("Watashi o mushi shinaide kudasaaai (>_<)");
     });
 
 
     // b_calc = $('#calc');
     // b_calc.click(function (polygon) { return function ()
     function recalc (polygon, cur_route) { return function () {
-        alert("Watashi o mushi shinaide kudasaaai (>_<)");
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
 
