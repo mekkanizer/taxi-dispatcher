@@ -34,18 +34,16 @@ function init() {
     // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
         var route = e.get('target').getRoute();
-        console.log (route);
 
         alert ('Route length - ' + route.getLength());
-        // notice me, senpai
-
-        routeEditor.events.add ('update', recalc (polygon, route));
-        // plsss
+        // routeEditor.events.add ('update', recalc (polygon, route));
+        route.events.add ('update', function () { recalc(polygon, route) });
         recalc (polygon, route);
-        // plsssss
-
     });
 
+    function debug(argument) {
+        alert(argument);
+    }
 
     // b_calc = $('#calc');
     // b_calc.click(function (polygon) { return function ()
