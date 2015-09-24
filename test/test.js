@@ -33,12 +33,9 @@ function init() {
 
     // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
-        var route = e.get('target').getRoute();
-
-        alert ('Route length - ' + route.getLength());
-        // routeEditor.events.add ('update', recalc (polygon, route));
-        route.events.add ('update', function () { recalc(polygon, route) });
-        recalc (polygon, route);
+        cur_route = e.get('target').getRoute();
+        route.events.add ('update', function () { recalc() });
+        recalc ();
     });
 
     function debug(argument) {
@@ -47,8 +44,8 @@ function init() {
 
     // b_calc = $('#calc');
     // b_calc.click(function (polygon) { return function ()
-    function recalc (polygon, cur_route) {
-        alert("Watashi o mushi shinaide kudasaaai (>_<)");
+    function recalc () {
+        // alert("Watashi o mushi shinaide kudasaaai (>_<)");
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
 
@@ -88,11 +85,11 @@ function init() {
             secondPath = ymaps.route([intersection,finish]);
             // ymaps.route([start, intersection]).then (function (firstPath) {
             //     ymaps.route([intersection,finish]).then ( function (firstPath) {return function (secondPath) {
-                    // Посчитаем их стоимость
-                    var total_cost = -70;
-                    total_cost += cost(polygon.contains(start), firstPath);
-                    total_cost += cost(polygon.contains(finish), secondPath);
-                    alert('Стоимость: ' + total_cost);
+            // Посчитаем их стоимость
+            var total_cost = -70;
+            total_cost += cost(polygon.contains(start), firstPath);
+            total_cost += cost(polygon.contains(finish), secondPath);
+            alert('Стоимость: ' + total_cost);
             //     }}(firstPath));
             // });
         }
