@@ -30,12 +30,15 @@ function init() {
     myMap.geoObjects.add(polygon);
 
 
-
+    bydlo = true;
     // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
         cur_route = e.get('target').getRoute();
-        route.events.add ('update', function () { recalc() });
-        recalc ();
+        cur_route.events.add ('update', function () { recalc() });
+        if (bydlo) {
+            recalc ();
+            bydlo = false;
+        }
     });
 
     function debug(argument) {
@@ -48,11 +51,11 @@ function init() {
         // alert("Watashi o mushi shinaide kudasaaai (>_<)");
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
-
-        if (polygon.contains(start) && polygon.contains(finish)) {
+            mkad = polygon.geometry;
+        if (mkad.contains(start) && mkad.contains(finish)) {
             // Поездка внутри МКАДа
             alert('Стоимость: ' + cost(1,cur_route));
-        } else if (!(polygon.contains(start) || polygon.contains(finish))) {
+        } else if (!(mkad.contains(start) || mkad.contains(finish))) {
             // Поездка снаружи МКАДа
             alert('Стоимость: ' + cost(1,cur_route));
         } else {
