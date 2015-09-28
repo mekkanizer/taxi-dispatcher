@@ -30,25 +30,16 @@ function init() {
     myMap.geoObjects.add(polygon);
 
 
-    bydlo = true;
-    // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
         cur_route = e.get('target').getRoute();
-        cur_route.events.add ('update', function () { recalc() });
-        if (bydlo) {
+        if (cur_route.getLength() != 0) {
+            cur_route.events.add ('update', function () { recalc() });
             recalc ();
-            bydlo = false;
         }
     });
 
-    function debug(argument) {
-        alert(argument);
-    }
 
-    // b_calc = $('#calc');
-    // b_calc.click(function (polygon) { return function ()
     function recalc () {
-        // alert("Watashi o mushi shinaide kudasaaai (>_<)");
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
             mkad = polygon.geometry;
@@ -86,8 +77,7 @@ function init() {
             // Проложим два маршрута
             firstPath = ymaps.route([start, intersection]);
             secondPath = ymaps.route([intersection,finish]);
-            // ymaps.route([start, intersection]).then (function (firstPath) {
-            //     ymaps.route([intersection,finish]).then ( function (firstPath) {return function (secondPath) {
+            
             // Посчитаем их стоимость
             var total_cost = -70;
             total_cost += cost(polygon.contains(start), firstPath);
