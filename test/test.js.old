@@ -30,28 +30,23 @@ function init() {
     myMap.geoObjects.add(polygon);
 
 
-
-    // Назначим обработчик на событие создания маршрута
     routeEditor.events.add ('deselect', function (e) {
-        var route = e.get('target').getRoute();
-        alert ('Route length - ' + route.getLength());
-        // notice me, senpai
-        route.Editor.events.add('routeupdate', function () { recalc(polygon, route) });
-        recalc (polygon, route);
-        alert("Watashi o mushi shinaide kudasaaai (>_<)");
+        cur_route = e.get('target').getRoute();
+        if (cur_route.getLength() != 0) {
+            cur_route.events.add ('update', function () { recalc() });
+            recalc ();
+        }
     });
 
 
-    // b_calc = $('#calc');
-    // b_calc.click(function (polygon) { return function ()
-    function recalc (polygon, cur_route) { return function () {
+    function recalc () {
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
-
-        if (polygon.contains(start) && polygon.contains(finish)) {
+            mkad = polygon.geometry;
+        if (mkad.contains(start) && mkad.contains(finish)) {
             // Поездка внутри МКАДа
             alert('Стоимость: ' + cost(1,cur_route));
-        } else if (!(polygon.contains(start) || polygon.contains(finish))) {
+        } else if (!(mkad.contains(start) || mkad.contains(finish))) {
             // Поездка снаружи МКАДа
             alert('Стоимость: ' + cost(1,cur_route));
         } else {
@@ -80,17 +75,18 @@ function init() {
                 // Возьмем первый из найденного
                 intersection = boundaryObjects.get(0).geometry.getCoordinates()[0];
             // Проложим два маршрута
-            ymaps.route([start, intersection]).then (function (firstPath) {
-                ymaps.route([intersection,finish]).then ( function (firstPath) {return function (secondPath) {
-                    // Посчитаем их стоимость
-                    var total_cost = -70;
-                    total_cost += cost(polygon.contains(start), firstPath);
-                    total_cost += cost(polygon.contains(finish), secondPath);
-                    alert('Стоимость: ' + total_cost);
-                }}(firstPath));
-            });
+            firstPath = ymaps.route([start, intersection]);
+            secondPath = ymaps.route([intersection,finish]);
+
+            // Посчитаем их стоимость
+            var total_cost = -70;
+            total_cost += cost(polygon.contains(start), firstPath);
+            total_cost += cost(polygon.contains(finish), secondPath);
+            alert('Стоимость: ' + total_cost);
+            //     }}(firstPath));
+            // });
         }
-    }}(polygon.geometry);
+    }
 }
 /*
 var jsonstr = "{\
