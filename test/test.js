@@ -15,6 +15,14 @@ function init() {
     // Создадим редактор маршрута
     var routeEditor = new ymaps.control.RouteEditor();
 
+    // Инициализируем DatePicker
+    $( "#datepicker" ).datepicker();
+    // Инициализируем TimePicker
+    var timepicker = $('#timepicker');
+    timepicker.clockpicker({
+        autoclose: true
+    });
+
     var myMap = new ymaps.Map('map', {
         center: [55.756578, 37.621552],
         zoom: 12,
@@ -31,20 +39,14 @@ function init() {
     // над спроецированным многоугольником, его нужно добавить на карту.
     myMap.geoObjects.add(polygon);
 
-    routeEditor.events.add ('deselect', function (e) {
-        cur_route = e.get('target').getRoute();
-        if (cur_route.getLength() != 0) {
-            cur_route.events.add ('update', function () { recalc() });
-            recalc ();
-        }
-    });
 
+    // Попросим Апач вернуть нам список доступных в API тарифов
     var get_url = "http://localhost/test?get";
-
     $.getJSON(get_url, function (tariffs) {
         console.log(JSON.stringify(tariffs));
         var dropdown = $("#tariff");
         $.each(tariffs, function(tariff) {
+            // Заполним выпадающее меню доступными тарифами
             dropdown.append($("<option />").val(this.id).text(this.name));
         });
     });
@@ -53,21 +55,20 @@ function init() {
 	console.log($('#tariff').find(':selected').val());
     });
 
-    submit = $('#submit');
-    submit.click( function () {
-        var settings = $("input[type='checkbox']");
-        result = "{";
-        settings.each(function (foo, box) {
-            console.log(box.id);
-        })
+    // Назначим событию постройки маршрута
+    // Обработчик, считающий примерные время и стоимость
+    routeEditor.events.add ('deselect', function (e) {
+        cur_route = e.get('target').getRoute();
+        if (cur_route.getLength() != 0) {
+            cur_route.events.add ('update', function () { recalc() });
+            recalc ();
+        }
     });
-
 
     function recalc () {
         var start = cur_route.getWayPoints().get(0).geometry.getCoordinates(),
             finish = cur_route.getWayPoints().get(1).geometry.getCoordinates();
             mkad = polygon.geometry;
-
 
         ymaps.geocode(start).then(function (res) {
             $("label[for=from]").text(res.geoObjects.get(0).properties.get('text'))
@@ -75,8 +76,6 @@ function init() {
         ymaps.geocode(finish).then(function (res) {
             $("label[for=to]").text(res.geoObjects.get(0).properties.get('text'))
         });
-
-
 
         if (mkad.contains(start) && mkad.contains(finish)) {
             // Поездка внутри МКАДа
@@ -123,6 +122,16 @@ function init() {
         }
     }
 }
+
+    // Назначим формирование JSON-строки по нажатию на "Отправить"
+    submit = $('#submit');
+    submit.click( function () {
+        var settings = $("input[type='checkbox']");
+        result = "{";
+        settings.each(function (foo, box) {
+            console.log(box.id);
+        })
+    });
 /*
 var jsonstr = "{\
         "id": "596c53c6b38211e3948e0f555c694a49",\
