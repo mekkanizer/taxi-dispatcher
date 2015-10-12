@@ -16,10 +16,11 @@ function init() {
     var routeEditor = new ymaps.control.RouteEditor();
 
     // Инициализируем DatePicker
-    $( "#datepicker" ).datepicker();
+    $("#datepicker").datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
     // Инициализируем TimePicker
-    var timepicker = $('#timepicker');
-    timepicker.clockpicker({
+    $('#timepicker').clockpicker({
         autoclose: true
     });
 
@@ -41,9 +42,8 @@ function init() {
 
 
     // Попросим Апач вернуть нам список доступных в API тарифов
-    var get_url = "http://localhost/test?get";
+    var get_url = "http://localhost/mediator?get";
     $.getJSON(get_url, function (tariffs) {
-        console.log(JSON.stringify(tariffs));
         var dropdown = $("#tariff");
         $.each(tariffs, function(tariff) {
             // Заполним выпадающее меню доступными тарифами
@@ -52,7 +52,7 @@ function init() {
     });
 
     $('#tariff').change(function () {
-	console.log($('#tariff').find(':selected').val());
+        console.log($('#tariff').find(':selected').val());
     });
 
     // Назначим событию постройки маршрута
@@ -79,10 +79,12 @@ function init() {
 
         if (mkad.contains(start) && mkad.contains(finish)) {
             // Поездка внутри МКАДа
-            alert('Стоимость: ' + cost(1,cur_route) + '\nВремя: ' + time(cur_route));
+            $("label[for=cost]").text(cost(1,cur_route) + ' рублей');
+            $("label[for=time]").text(time(cur_route) +' минут');
         } else if (!(mkad.contains(start) || mkad.contains(finish))) {
             // Поездка снаружи МКАДа
-            alert('Стоимость: ' + cost(0,cur_route) + '\nВремя: ' + time(cur_route));
+            $("label[for=cost]").text(cost(0,cur_route) + ' рублей');
+            $("label[for=time]").text(time(cur_route) + ' минут');
         } else {
             // Объединим в выборку все сегменты маршрута.
             var pathsObjects = ymaps.geoQuery(cur_route.getPaths()),
@@ -116,97 +118,119 @@ function init() {
                     var total_cost = -70;
                     total_cost += cost(mkad.contains(start), firstPath);
                     total_cost += cost(mkad.contains(finish), secondPath);
-                    console.log ('Стоимость: ' + total_cost + '\nВремя: ' + (time(firstPath) + time(secondPath)));
+                    $("label[for=cost]").text(total_cost + ' рублей');
+                    $("label[for=time]").text((time(firstPath) + time(secondPath)) + ' минут');
                 }}(firstPath));
             });
         }
     }
-}
 
     // Назначим формирование JSON-строки по нажатию на "Отправить"
     submit = $('#submit');
     submit.click( function () {
-        var settings = $("input[type='checkbox']");
-        result = "{";
-        settings.each(function (foo, box) {
-            console.log(box.id);
-        })
+
+        // var settings = $("input[type='checkbox']");
+        // result = "{";
+        // settings.each(function (foo, box) {
+        //     result += "\"" + box.id + "\":\"" + (box.checked ? 1 : 0) + "\",";
+        // })
+        // result = result.slice(0,-1);
+        // result += "}";
+        // console.log(result);
+
+        // try {
+            var result = {
+                "from":{
+                    "address":$("label[for=from]").val,
+                    "porch":$("#from_has_porch").checked ? ($("#from_porch").val) : undefined,
+                    "lon":cur_route.getWayPoints().get(0).geometry.getCoordinates()[0],
+                    "lat":cur_route.getWayPoints().get(0).geometry.getCoordinates()[1]
+                },
+                "to":{
+                    "address":$("label[for=to]").val,
+                    "porch":$("#to_has_porch").checked ? ($("#to_porch").val) : undefined,
+                    "lon":cur_route.getWayPoints().get(1).geometry.getCoordinates()[0],
+                    "lat":cur_route.getWayPoints().get(1).geometry.getCoordinates()[1]
+                },
+                "client": {
+                    "name": $("#name").val,
+                    "phone": $("#tel").val,
+                    "comment": $("#comment").val
+                },
+                "unpool_time": 35, // make field?
+                "booking_time": $("#datepicker").val + ' ' + $("#timepicker").val + ":00 +0400",
+                "booking_time_exact": 1,
+                "status": "request", // neccessary?
+            	"messenger": {
+            		"tariff": 1, //
+            		"category": "business", //
+            		"comment": "", // neccessary?
+            		"minprice": $("#airport").checked ? $("#fixprice").val: 0, //
+            		"inctime": $("#airport").checked ? 1000 : 0, //
+            		"incdist": 0, // well, anyways if transfer = 1 then incdist is ignored
+            		"timecost": $("#min").val,
+            		"distcost": $("#km_ins").val, // or?..
+            		"transfer": $("#airport").checked ? 1 : 0,
+            		"algorithm": "sum",
+
+            		"distcost_cad": $("#km_ins").val,
+            		"distcost_out": $("#km_outs").val,
+            		"timecost_cad": 10, // neccessary?
+            		"timecost_out": 15, // neccessary?
+            		"distcost_service_out": 200,
+            		"add_minprice": 400, // neccessary?
+            		"add_minprice_transfer": 500, // neccessary?
+            		"included_req_costs": 1,
+
+            		"distcost_unit": 15,
+            		"timecost_unit": 20,
+            		"speed": 20,
+            		"speed_time_markup": 12.1,
+
+            		"time_free": 10,
+            		"time_cost_wait": 11,
+
+            		"hide_client_phone": 1,
+
+            		"contact": { // make fields?
+            			"phone": "+79261234567",
+            			"title": "гендиректор диспетчерской Такси-супер"
+            		}
+            	},
+            	"requirement": { // nothing is neccessary
+            		"has_conditioner":		1,
+            		"no_smoking":			0,
+
+            		"child_chair":			0,
+            		"childseat_amount":		0,
+            		"childcradle_amount":		2,
+            		"childbooster_amount":		3,
+
+            		"animal_transport":		1,
+            		"universal":			0,
+            		"wifi":				1,
+            		"check":			0,
+            		"card":				1,
+            		"noncash":			0,
+
+            		"special_number":		1,
+            		"no_brand":			0,
+
+            		"car_license":			1,
+            		"driver_license":		1,
+            		"driver_rating":		1
+            	},
+
+            	"fee": { // HY>|<HA HAU,EHKA?
+            		"fix": 0,
+            		"relative": 0
+            	},
+            }
+            console.log(JSON.stringify(result));
+        // } catch (err) {
+        //     alert("Задайте начальную и конечную точки");
+        // }
     });
-/*
-var jsonstr = "{\
-        "id": "596c53c6b38211e3948e0f555c694a49",\
-        "version": 10,\
-  "from": {\
-    "address": "Россия, Москва, Таганрогская улица, 29",\
-    "porch": 3,\
-                "lon": 33,\
-                "lat": 55\
-  },\
-  "to": {\
-    "address": "Россия, Московская область, Домодедово аэропорт",\
-                "porch": 2,\
-                "lon": 33,\
-                "lat": 55\
-  },\
-  "client": {\
-    "name": name.value,\
-    "phone": tel.value,\
-    "comment": comment.value,\
-    // "data": "a sender client data"
-  },\
-  "unpool_time": 35,\
-        "booking_time": '2013-01-02 23:00:00 +0400',\
-        "status": "request",\
-  "messenger": {\
-    "tariff": 1,\
-    "category": category.value,\
-    "comment": "Сказать клиенту пароль: я от Семена",\
-    "minprice": 450,\
-    "inctime": 30,\
-    "incdist": 20,\
-    "timecost": 11,\
-    "distcost": 22,\
-    "transfer": 1,\
-    "algorithm": "max",\
-\
-    "distcost_unit": 15,\
-    "timecost_unit": 20,\
-    "speed": 20,\
-    "speed_time_markup": 12.1,\
-\
-    "time_free": 10,\
-    "time_cost_wait": 11,\
-\
-    "hide_client_phone": 1\
-  },\
-  "requirement": {\
-    // does True convert to 1? False to 0?
-    "has_conditioner":    ac.value,\
-    "no_smoking":     no_smoking.value,\
-    \
-    "child_chair":      kid.value,\
-    // "childseat_amount":   0,\
-    // "childcradle_amount":   2,\
-    // "childbooster_amount":    3,\
-\
-    "animal_transport":   animal.value,\
-    "universal":      hatchback.value,\
-    "wifi":       1,\
-    "check":      check.value,\
-    // TO-DO: ask about card option
-    "card":       0,\
-    "noncash":      !(cash.value),\
-\
-    "special_number":   spec_num.value,\
-    "no_brand":     0\
-  },\
-\
-  "fee": {\
-    "fix": 10,\
-    "relative": 5\
-  },\
-  "data": "a sender order data"\
-}";
-var json = jQuery.parseJSON(jsonstr);
-jQuery.post(url, json);
-*/
+
+    // last bracket
+}

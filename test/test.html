@@ -24,41 +24,59 @@
         #map {
             width: 100%; height: 80%;
         }
+        important {
+            font-size: 140%
+        }
     </style>
 </head>
 
 <body>
   <div id="map"></div>
-  <label>Откуда:</label>
-  <label for="from"></label><br>
-  <label>Куда:</label>
-  <label for="to"></label><br>
-  <input type="checkbox" id="has_porch" checked="false">
+  <important>
+      <label>Откуда:</label>
+      <label for="from"></label>
+  </important><br>
+  <input type="checkbox" id="from_has_porch" checked="false">
   <label>Подъезд:</label>
-  <input type="text" id="porch"><br>
+  <input type="text" id="from_porch" size="2"><br>
+  <important>
+      <label>Куда:</label>
+      <label for="to"></label>
+  </important><br>
+  <input type="checkbox" id="to_has_porch" checked="false">
+  <label>Подъезд:</label>
+  <input type="text" id="to_porch" size="2"><br>
+  <important>
+      <label>Стоимость:</label>
+      <label for="cost"></label>
+      <br>
+      <label>Время:</label>
+      <label for="time"></label>
+  </important><br>
   <p><b>Контактное лицо:</b><br>
-   <input type="text" id="id" size="100">
+   <input type="text" id="name" size="40">
   </p>
   <p><b>Номер телефона:</b><br>
    <input type="tel" id="tel" size="15">
   </p>
-  <p><b>Дата и время подачи авто:</b><br>
-   Дата:<input type="text" id="datepicker"><br>
-   Время:<input id="timepicker" data-default="now">
+  <p><b>Дата и время подачи:</b><br>
+   Дата:<input type="text" id="datepicker" size="8"><br>
+   Время:<input id="timepicker" data-default="now" size="3">
    <br>
    <!--default="now"-->
   </p>
 
   <p><b>Цифры:</b><br>
       <label for="min">Цена за минуту:</label>
-      <input type="text" value="10"><br>
+      <input type="text" value="10" size="2"><br>
       <label for="km_ins">Цена за км</label>
-      <input type="text" value="7"><br>
+      <input type="text" value="7" size="2"><br>
       <label for="km_outs">Цена за км (за МКАДом)</label>
-      <input type="text" value="15"><br>
+      <input type="text" value="15" size="2"><br>
+      <b>Фиксированная цена:</b><br>
       <input type="checkbox" id="airport" checked="false">
       <label for="airport">Аэропорт</label>
-      <input type="text" value="900">
+      <input type="text" id="fixprice" value="900" size="3">
   </p>
   <!--p><b>Класс машины:</b><br>
    <input type="radio" id="category" value="standard"> Эконом<br>
@@ -66,8 +84,8 @@
   <b>Тариф:</b>
   <select id="tariff"></select><br>
   <b>Тип оплаты:</b><br>
-   <input type="radio" id="cash"> Наличный расчёт<br>
-   <input type="radio" id="cash"> Безналичный расчёт<br>
+   <input type="radio" name="cash" id="cash" checked="true"> Наличный расчёт<br>
+   <input type="radio" name="cash" id="noncash"> Безналичный расчёт<br>
   <b>Комментарий:</b><br>
    <textarea id="comment" cols="40" rows="3"></textarea>
   <br>
