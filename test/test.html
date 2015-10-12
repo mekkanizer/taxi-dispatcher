@@ -36,14 +36,14 @@
       <label>Откуда:</label>
       <label for="from"></label>
   </important><br>
-  <input type="checkbox" id="from_has_porch" checked="false">
+  <input type="checkbox" id="from_has_porch">
   <label>Подъезд:</label>
   <input type="text" id="from_porch" size="2"><br>
   <important>
       <label>Куда:</label>
       <label for="to"></label>
   </important><br>
-  <input type="checkbox" id="to_has_porch" checked="false">
+  <input type="checkbox" id="to_has_porch">
   <label>Подъезд:</label>
   <input type="text" id="to_porch" size="2"><br>
   <important>
@@ -74,30 +74,35 @@
       <label for="km_outs">Цена за км (за МКАДом)</label>
       <input type="text" value="15" size="2"><br>
       <b>Фиксированная цена:</b><br>
-      <input type="checkbox" id="airport" checked="false">
+      <input type="checkbox" id="airport">
       <label for="airport">Аэропорт</label>
       <input type="text" id="fixprice" value="900" size="3">
   </p>
   <!--p><b>Класс машины:</b><br>
    <input type="radio" id="category" value="standard"> Эконом<br>
   </p-->
-  <b>Тариф:</b>
-  <select id="tariff"></select><br>
+  <!--b>Тариф:</b>
+  <select id="tariff"></select><br-->
   <b>Тип оплаты:</b><br>
    <input type="radio" name="cash" id="cash" checked="true"> Наличный расчёт<br>
    <input type="radio" name="cash" id="noncash"> Безналичный расчёт<br>
-  <b>Комментарий:</b><br>
-   <textarea id="comment" cols="40" rows="3"></textarea>
+  <b>Комментарий клиента:</b><br>
+   <textarea id="client_comment" cols="40" rows="3"></textarea>
   <br>
   <b>Дополнительно:</b><br>
-   <input type="checkbox" id="no_smoking" value="false"> Некурящий водитель <br>
-   <input type="checkbox" id="has_conditioner" value="false"> Кондиционер <br>
-   <input type="checkbox" id="check" value="false"> Требуется чек <br>
-   <input type="checkbox" id="special_number" value="false"> Спец. номера <br>
+   <input type="checkbox" id="no_smoking"> Некурящий водитель <br>
+   <input type="checkbox" id="has_conditioner"> Кондиционер <br>
+   <input type="checkbox" id="check"> Требуется чек <br>
+   <input type="checkbox" id="special_number"> Спец. номера <br>
   <b>Дополнительные услуги (платно):</b><br>
-   <input type="checkbox" id="animal_transport" value="false"> Перевозка животных(150) <br>
-   <input type="checkbox" id="child_chair" value="false"> Детское кресло(150) <br>
-   <input type="checkbox" id="universal" value="false"> Универсал(200) <br>
+   <input type="checkbox" id="animal_transport"> Перевозка животных(150) <br>
+   <input type="checkbox" id="child_chair"> Детское кресло(150) <br>
+   <input type="checkbox" id="hatchback"> Универсал(200) <br>
+   <b>За сколько до подачи выводить заказ из отстойника</b><br>
+   <input type="text" id="unpool_time" size="2" value="0"> минут<br>
+   <b>Ваш комментарий:</b><br>
+    <textarea id="dispatcher_comment" cols="40" rows="3"></textarea>
+   <br>
   <button id="submit">Отправить</button>
 </body>
 

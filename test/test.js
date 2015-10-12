@@ -43,17 +43,21 @@ function init() {
 
     // Попросим Апач вернуть нам список доступных в API тарифов
     var get_url = "http://localhost/mediator?get";
+    var standart_id = 0;
     $.getJSON(get_url, function (tariffs) {
         var dropdown = $("#tariff");
         $.each(tariffs, function(tariff) {
             // Заполним выпадающее меню доступными тарифами
-            dropdown.append($("<option />").val(this.id).text(this.name));
+            // dropdown.append($("<option />").val(this.id).text(this.name));
+            if (this.name == "Стандарт")
+                standart_id = this.id;
         });
     });
 
     $('#tariff').change(function () {
         console.log($('#tariff').find(':selected').val());
     });
+
 
     // Назначим событию постройки маршрута
     // Обработчик, считающий примерные время и стоимость
@@ -137,99 +141,89 @@ function init() {
         // result = result.slice(0,-1);
         // result += "}";
         // console.log(result);
+        var result = {
+            "from":{
+                "address":$("label[for=from]").text(),
+                "porch":$("#from_has_porch").is(':checked') ? ($("#from_porch").val()) : undefined,
+                "lon":cur_route.getWayPoints().get(0).geometry.getCoordinates()[0],
+                "lat":cur_route.getWayPoints().get(0).geometry.getCoordinates()[1]
+            },
+            "to":{
+                "address":$("label[for=to]").text(),
+                "porch":$("#to_has_porch").is(':checked') ? ($("#to_porch").val()) : undefined,
+                "lon":cur_route.getWayPoints().get(1).geometry.getCoordinates()[0],
+                "lat":cur_route.getWayPoints().get(1).geometry.getCoordinates()[1]
+            },
+            "client": {
+                "name": $("#name").val(),
+                "phone": $("#tel").val(),
+                "comment": $("#client_comment").val()
+            },
+            "unpool_time": $("#unpool_time").val(),
+            "booking_time": $("#datepicker").val() + ' ' + $("#timepicker").val() + ":00 +0400",
+            "booking_time_exact": 1,
+            "status": "request", // neccessary?
+        	"messenger": {
+        		"tariff": standart_id, // got the id before
+        		"comment": $("#dispatcher_comment").val(),
+        		"minprice": $("#airport").is(':checked') ? $("#fixprice").val(): 0, //
+        		"inctime": $("#airport").is(':checked') ? 1000 : 0, //
+        		"incdist": 0, // well, anyways if transfer = 1 then incdist is ignored
+        		"timecost": $("#min").val(),
+        		"transfer": $("#airport").is(':checked') ? 1 : 0,
+        		"algorithm": "sum",
 
-        // try {
-            var result = {
-                "from":{
-                    "address":$("label[for=from]").val,
-                    "porch":$("#from_has_porch").checked ? ($("#from_porch").val) : undefined,
-                    "lon":cur_route.getWayPoints().get(0).geometry.getCoordinates()[0],
-                    "lat":cur_route.getWayPoints().get(0).geometry.getCoordinates()[1]
-                },
-                "to":{
-                    "address":$("label[for=to]").val,
-                    "porch":$("#to_has_porch").checked ? ($("#to_porch").val) : undefined,
-                    "lon":cur_route.getWayPoints().get(1).geometry.getCoordinates()[0],
-                    "lat":cur_route.getWayPoints().get(1).geometry.getCoordinates()[1]
-                },
-                "client": {
-                    "name": $("#name").val,
-                    "phone": $("#tel").val,
-                    "comment": $("#comment").val
-                },
-                "unpool_time": 35, // make field?
-                "booking_time": $("#datepicker").val + ' ' + $("#timepicker").val + ":00 +0400",
-                "booking_time_exact": 1,
-                "status": "request", // neccessary?
-            	"messenger": {
-            		"tariff": 1, //
-            		"category": "business", //
-            		"comment": "", // neccessary?
-            		"minprice": $("#airport").checked ? $("#fixprice").val: 0, //
-            		"inctime": $("#airport").checked ? 1000 : 0, //
-            		"incdist": 0, // well, anyways if transfer = 1 then incdist is ignored
-            		"timecost": $("#min").val,
-            		"distcost": $("#km_ins").val, // or?..
-            		"transfer": $("#airport").checked ? 1 : 0,
-            		"algorithm": "sum",
+        		"distcost_cad": $("#km_ins").val(),
+        		"distcost_out": $("#km_outs").val(),
+        		"timecost_cad": 10, // neccessary?
+        		"timecost_out": 15, // neccessary?
+        		"distcost_service_out": 200,
+        		"add_minprice": 400, // neccessary?
+        		"add_minprice_transfer": 500, // neccessary?
+        		"included_req_costs": 1,
 
-            		"distcost_cad": $("#km_ins").val,
-            		"distcost_out": $("#km_outs").val,
-            		"timecost_cad": 10, // neccessary?
-            		"timecost_out": 15, // neccessary?
-            		"distcost_service_out": 200,
-            		"add_minprice": 400, // neccessary?
-            		"add_minprice_transfer": 500, // neccessary?
-            		"included_req_costs": 1,
+        		"distcost_unit": 15,
+        		"timecost_unit": 20,
+        		"speed": 0,
+        		"speed_time_markup": 0,
 
-            		"distcost_unit": 15,
-            		"timecost_unit": 20,
-            		"speed": 20,
-            		"speed_time_markup": 12.1,
+        		"time_free": 10,
+        		"time_cost_wait": 11,
 
-            		"time_free": 10,
-            		"time_cost_wait": 11,
+        		"hide_client_phone": 0,
 
-            		"hide_client_phone": 1,
+        		"contact": { // make fields?
+        			"phone": "+79261234567",
+        			"title": "гендиректор диспетчерской Такси-супер"
+        		}
+        	},
+        	"requirement": { // nothing is neccessary
+        		"has_conditioner":$("#has_conditioner").is(':checked') ? 1 : 0,
+        		"no_smoking":$("#no_smoking").is(':checked') ? 1 : 0,
 
-            		"contact": { // make fields?
-            			"phone": "+79261234567",
-            			"title": "гендиректор диспетчерской Такси-супер"
-            		}
-            	},
-            	"requirement": { // nothing is neccessary
-            		"has_conditioner":		1,
-            		"no_smoking":			0,
+        		"child_chair":$("#child_chair").is(':checked') ? 1 : 0,
 
-            		"child_chair":			0,
-            		"childseat_amount":		0,
-            		"childcradle_amount":		2,
-            		"childbooster_amount":		3,
+        		"animal_transport":$("#animal_transport").is(':checked') ? 1 : 0,
+        		"universal":$("#hatchback").is(':checked') ? 1 : 0,
+        		"wifi":1, // ???
+        		"check":$("#check").is(':checked') ? 1 : 0,
+        		"card":1, // ???
+        		"noncash":$("#noncash").is(':checked') ? 1 : 0,
 
-            		"animal_transport":		1,
-            		"universal":			0,
-            		"wifi":				1,
-            		"check":			0,
-            		"card":				1,
-            		"noncash":			0,
+        		"special_number":$("#special_number").is(':checked') ? 1 : 0,
+        		"no_brand":0, // ???
 
-            		"special_number":		1,
-            		"no_brand":			0,
+        		"car_license":			1,
+        		"driver_license":		1,
+        		"driver_rating":		1
+        	},
 
-            		"car_license":			1,
-            		"driver_license":		1,
-            		"driver_rating":		1
-            	},
-
-            	"fee": { // HY>|<HA HAU,EHKA?
-            		"fix": 0,
-            		"relative": 0
-            	},
-            }
-            console.log(JSON.stringify(result));
-        // } catch (err) {
-        //     alert("Задайте начальную и конечную точки");
-        // }
+        	"fee": {
+        		"fix": 0,
+        		"relative": 5
+        	},
+        }
+        console.log(JSON.stringify(result));
     });
 
     // last bracket
