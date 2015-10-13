@@ -33,19 +33,19 @@
 <body>
   <div id="map"></div>
   <important>
-      <label>Откуда:</label>
+      Откуда:
       <label for="from"></label>
   </important><br>
   <input type="checkbox" id="from_has_porch">
-  <label>Подъезд:</label>
-  <input type="text" id="from_porch" size="2"><br>
+  Подъезд:
+  <input type="text" id="from_porch" size="2" disabled><br>
   <important>
-      <label>Куда:</label>
+      Куда:
       <label for="to"></label>
   </important><br>
   <input type="checkbox" id="to_has_porch">
-  <label>Подъезд:</label>
-  <input type="text" id="to_porch" size="2"><br>
+  Подъезд:
+  <input type="text" id="to_porch" size="2" disabled><br>
   <important>
       <label>Стоимость:</label>
       <label for="cost"></label>
@@ -63,46 +63,66 @@
    Дата:<input type="text" id="datepicker" size="8"><br>
    Время:<input id="timepicker" data-default="now" size="3">
    <br>
-   <!--default="now"-->
   </p>
 
-  <p><b>Цифры:</b><br>
-      <label for="min">Цена за минуту:</label>
-      <input type="text" value="10" size="2"><br>
-      <label for="km_ins">Цена за км</label>
-      <input type="text" value="7" size="2"><br>
-      <label for="km_outs">Цена за км (за МКАДом)</label>
-      <input type="text" value="15" size="2"><br>
-      <b>Фиксированная цена:</b><br>
-      <input type="checkbox" id="airport">
-      <label for="airport">Аэропорт</label>
-      <input type="text" id="fixprice" value="900" size="3">
-  </p>
-  <!--p><b>Класс машины:</b><br>
-   <input type="radio" id="category" value="standard"> Эконом<br>
-  </p-->
-  <!--b>Тариф:</b>
-  <select id="tariff"></select><br-->
-  <b>Тип оплаты:</b><br>
-   <input type="radio" name="cash" id="cash" checked="true"> Наличный расчёт<br>
+<p><b>Цифры:</b>
+    <br>Подача:
+    <input type="text" id="service" value="70" size="2">
+    <br>Цена за минуту:
+    <input type="text" id="minute" value="10" size="2">
+    <br>Цена за км:
+    <input type="text" id="km_ins" value="7" size="2">
+    <br>Цена за км (за МКАДом):
+    <input type="text" id="km_outs" value="15" size="2">
+<p><b>Фиксированная цена:</b>
+    <br><input type="checkbox" id="airport">
+    Аэропорт
+    <input type="text" id="fixprice" value="900" size="3" disabled>
+  <p><b>Тип оплаты:</b><br>
+   <input type="radio" name="cash" id="cash" checked> Наличный расчёт<br>
    <input type="radio" name="cash" id="noncash"> Безналичный расчёт<br>
-  <b>Комментарий клиента:</b><br>
+  <p><b>Комментарий клиента:</b><br>
    <textarea id="client_comment" cols="40" rows="3"></textarea>
-  <br>
-  <b>Дополнительно:</b><br>
-   <input type="checkbox" id="no_smoking"> Некурящий водитель <br>
-   <input type="checkbox" id="has_conditioner"> Кондиционер <br>
-   <input type="checkbox" id="check"> Требуется чек <br>
-   <input type="checkbox" id="special_number"> Спец. номера <br>
-  <b>Дополнительные услуги (платно):</b><br>
+  <p><b>Дополнительно:</b><br>
+   <input type="radio" name="smoke" id="no_smoking"> Не курить!<br>
+   <input type="radio" name="smoke" id="smoking"> Будет курить<br>
+   <input type="checkbox" id="has_conditioner"> Кондиционер<br>
+   <input type="checkbox" id="car_license"> Только с лицензией<br>
+   <input type="checkbox" id="wifi"> Wi-Fi в машине<br>
+   <input type="checkbox" id="card"> Оплата банковской картой<br>
+   <input type="checkbox" id="check"> Требуется кассовый чек<br>
+   <input type="checkbox" id="special_number"> Спец. номера<br>
+   <input type="checkbox" id="no_brand"> Не брендирован (такси)<br>
+   <input type="checkbox" id="driver_rating"> Только водители с рейтингом<br>
+  <p><b>Дополнительные услуги (платно):</b><br>
    <input type="checkbox" id="animal_transport"> Перевозка животных(150) <br>
-   <input type="checkbox" id="child_chair"> Детское кресло(150) <br>
    <input type="checkbox" id="hatchback"> Универсал(200) <br>
-   <b>За сколько до подачи выводить заказ из отстойника</b><br>
+   <p>Число детских кресел: <select id="childseat">
+    <option value="0" selected>Не требуется</option>
+    <option value="1">Одно кресло</option>
+    <option value="2">Два кресла</option>
+   </select></p>
+   <p>Число детских люлек: <select id="childcradle">
+    <option value="0" selected>Не требуется</option>
+    <option value="1">Одна люлька</option>
+    <option value="2">Два люльки</option>
+   </select></p>
+   <p>Число детских бустеров: <select id="childbooster">
+    <option value="0" selected>Не требуется</option>
+    <option value="1">Один бустер</option>
+    <option value="2">Два бестера</option>
+   </select></p>
+   <p><b>За сколько до подачи выводить заказ из отстойника</b><br>
    <input type="text" id="unpool_time" size="2" value="0"> минут<br>
-   <b>Ваш комментарий:</b><br>
+   <p><b>Ваш комментарий:</b><br>
     <textarea id="dispatcher_comment" cols="40" rows="3"></textarea>
-   <br>
+    <br>
+    <input type="checkbox" id="contact">
+    <b>Делегировать заказ:</b>
+    <div id="contact_fields" hidden>
+        Контактное лицо:<input type="text" id="contact_name" size="40">
+        Номер телефона:<input type="text" id="contact_tel" size="15">
+    </div>
   <button id="submit">Отправить</button>
 </body>
 
